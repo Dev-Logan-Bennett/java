@@ -1,0 +1,81 @@
+I need to import planet-generator-master folder from github into my project.
+I also need to construct the pathfinding algorithm in another folder.
+
+From there, I need to import both the planet-generator-master folder from within my projec and import the pathfinding algorithm. I then need to feed data about the planets, in the form of a A x B sized matrix, (probably 16 X 16, the size of the matrix is already predetermined by the imported classes), to the pathfinding algorithm to receive back the optimized path between any two planets, or the path on the surface of the planet, depending on which data I feed the functions.
+
+//Code for the pathfinding algorithm
+pubilc class shortestPath
+  static final int (min distance value) = n;
+function int minDistance
+  parameters = (int distance[], boolean set)
+function printSolution
+  parameters = (int distance[], boolean set);
+  initialize minimum value;
+function matrixRep
+  parameters = (int graph[][], int source)
+  int distance;
+main 
+  read in graph through matrices values
+
+//Code for using the imported planet-generator code
+  //Creating an instance of a planet
+     PlanetGenerator planetGenerator = new PlanetGenerator();
+
+        // unique seed for the planet
+        long[] seed = new long[] { 4 };
+
+        // generate planet data for unique seed
+        PlanetData planetData = planetGenerator.createPlanetData(seed);
+
+        // print some random generated planet values
+        System.out.println("radius : " + planetData.radius + " m");
+        System.out.println("revolutionTime : " + planetData.revolutionTime + " s");
+        System.out.println("orbitTime : " + planetData.orbitTime + " s");
+
+        // modify generated planet data if you need to fulfill special constraints
+        planetData.baseTemperature = 290; // 290 K ~= 17 C ~= 62 F --- expect warm tropics at the equator, small polar caps
+
+        // create planet according to planet data constraints
+        Planet planet = planetGenerator.createPlanet(planetData);
+
+    //Output
+    radius : 5137796.466254459 m
+    revolutionTime : 59521302 s
+    orbitTime : 40005614677 s
+
+
+    //This code is used to render the terrain, which is what most likely will be read and attempted to find the shortest path
+    // specify context and add the texture types you want to generate (we simply add all of them)
+        PlanetGenerationContext context = planet.createDefaultContext();
+        context.accuracy = 1; // meters
+        context.textureTypes.addAll(Arrays.asList(TextureType.values()));
+
+        // create terrainHeightMap to be filled
+        DoubleMap terrainHeightMap = new DoubleMap(16, 16);
+
+        // generate terrain textures and fill terrain height map for the specified area
+        Map<TextureType, TextureWriter<BufferedImage>> textures = planet.getTextures(
+                Math.toRadians(90.0), Math.toRadians(100.0), Math.toRadians(180.0), Math.toRadians(190.0),
+                64, 64, context, (width, height, textureType) -> new BufferedImageTextureWriter(width, height), terrainHeightMap);
+
+        // save the textures into png files
+        try {
+            for (Map.Entry<TextureType, TextureWriter<BufferedImage>> entry : textures.entrySet()) {
+                String filename = "terrain_" + entry.getKey().name().toLowerCase() + ".png";
+                BufferedImage image = entry.getValue().getTexture();
+                ImageIO.write(image, "png", new File(filename));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // use the terrain height map to create the 3D mesh
+        for(int y = 0; y < terrainHeightMap.height; y++) {
+            for (int x = 0; x < terrainHeightMap.width; x++) {
+                if (x > 0) {
+                    System.out.print(", ");
+                }
+                System.out.print(terrainHeightMap.getValue(x, y));
+            }
+            System.out.println();
+        }
