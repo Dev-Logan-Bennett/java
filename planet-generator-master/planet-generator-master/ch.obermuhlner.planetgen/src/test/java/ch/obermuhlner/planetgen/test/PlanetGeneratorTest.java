@@ -120,4 +120,25 @@ public class PlanetGeneratorTest {
             System.out.println();
         }
     }
+    public static void main(String[] args) {
+        System.out.println("Hello");
+        PlanetGenerator planetGenerator = new PlanetGenerator();
+
+        // unique seed for the planet
+        long[] seed = new long[] { 4 };
+
+        // generate planet data for unique seed
+        PlanetData planetData = planetGenerator.createPlanetData(seed);
+
+        // print some values of generated planet
+        System.out.println("radius : " + planetData.radius + " m");
+        System.out.println("revolutionTime : " + planetData.revolutionTime + " s");
+        System.out.println("orbitTime : " + planetData.orbitTime + " s");
+
+        // modify generated planet data if you need to fulfill special constraints
+        planetData.baseTemperature = 290; // Kelvin - expect warm tropics at the equator, small polar caps
+
+        // create planet according to planet data constraints
+        Planet planet = planetGenerator.createPlanet(planetData);
+    }
 }
