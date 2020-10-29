@@ -1,3 +1,5 @@
+TESTING
+
 I need to import planet-generator-master folder from github into my project.
 I also need to construct the pathfinding algorithm in another folder.
 
